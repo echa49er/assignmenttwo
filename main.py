@@ -68,8 +68,29 @@ class SandwichMachine:
                 print(f"Here is ${change:.2f} in change.")
             return True
 
-    def make_sandwich(self, sandwich_size, order_ingredients):
-        """Deduct the required ingredients from the resources.
-           Hint: no output"""
+        def make_sandwich(self, sandwich_size, order_ingredients):
+            for item in order_ingredients:
+                self.machine_resources[item] -= order_ingredients[item]
+            print(f"{sandwich_size} sandwich is ready. Bon appetit!")
 
-### Make an instance of SandwichMachine class and write the rest of the codes ###
+    ### Make an instance of SandwichMachine class and write the rest of the codes ###
+
+    sammy = SandwichMachine(resources)
+
+    while True:
+        choice = input("What would you like? (small/medium/large/off/report): ").lower().strip()
+
+        if choice == "off":
+            break
+        elif choice == "report":
+            print(f"Bread: {sammy.machine_resources['bread']} slice(s)")
+            print(f"Ham: {sammy.machine_resources['ham']} slice(s)")
+            print(f"Cheese: {sammy.machine_resources['cheese']} ounce(s)")
+        elif choice in ["small", "medium", "large"]:
+            sandwich = recipes[choice]
+            if sammy.check_resources(sandwich["ingredients"]):
+                payment = sammy.process_coins()
+                if sammy.transaction_result(payment, sandwich["cost"]):
+                    sammy.make_sandwich(choice, sandwich["ingredients"])
+        else:
+            print("Invalid choice. Please try again.")
